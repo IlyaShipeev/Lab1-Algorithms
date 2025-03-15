@@ -17,7 +17,7 @@ public:
     size_t return_size();
     void ClearList();
     bool is_empty();
-    size_t is_it_here(const T& value);
+    bool is_it_here(const T& value);
     T findByIndex(size_t index);
     void changeByIndex(size_t index, const T& value);
     size_t findByNumber(const T& value);
@@ -176,15 +176,15 @@ bool List<T>::is_empty() {
     }
 
 template<typename T>
-size_t List<T>::is_it_here(const T& value) {
+bool List<T>::is_it_here(const T& value) {
     for (size_t i = 0; i < size; i++) {
         if (data[i] == value) {
             cout << "Ваш элемент найден в списке!" << endl;
-            return 1;
+            return true;
         }
     }
     cout << "Такой элемент в списке отсутствует!\n";
-    return 0;
+    return false;
 }
 template<typename T>
 T List<T>::findByIndex(size_t index) {
