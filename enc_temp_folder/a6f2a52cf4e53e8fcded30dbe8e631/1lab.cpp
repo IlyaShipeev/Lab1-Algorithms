@@ -57,8 +57,6 @@ public:
         bool operator!=(const ReverseIterator& other) const {
             return ptr != other.ptr;
         }
-        T getValue() const { return *ptr; }         // Метод для чтения значения ............................................надо ор нет
-        void setValue(const T& value) { *ptr = value; } // Метод для записи нового значения
     };
     class Iterator {
     private:
@@ -90,8 +88,6 @@ public:
         bool operator!=(const Iterator& other) const {
             return ptr != other.ptr;
         }
-        T getValue() const { return *ptr; }         // Метод для чтения значения .........................................надо ор нет
-        void setValue(const T& value) { *ptr = value; } // Метод для записи нового зна
     };
     Iterator find_begin();
     Iterator find_end();
@@ -108,8 +104,6 @@ public:
     // Методы для получения обратных итераторов
     ReverseIterator rbegin() { return ReverseIterator(data + size - 1); }
     ReverseIterator rend() { return ReverseIterator(data - 1); }
-
-    
 };
 
 template<typename T>
@@ -456,12 +450,12 @@ void runMenu() {
         case 15:
             cout << "Введите новое значение: ";
             cin >> value;
-            directIt.setValue(value);// *directIt = value;
+            *directIt = value;
             cout << "Запись выполнена.\n";
             break;
         case 16:
             if (directIt != myList.find_end()) {
-                cout << "Текущий элемент: " << directIt.getValue() //*directIt << endl;
+                cout << "Текущий элемент: " << *directIt << endl;
             }
             else {
                 cout << "Итератор вне границ списка.\n";
@@ -484,12 +478,12 @@ void runMenu() {
         case 19:
             cout << "Введите новое значение: ";
             cin >> value;
-            reverseIt.setValue(value);//*reverseIt = value;
+            *reverseIt = value;
             cout << "Запись выполнена.\n";
             break;
         case 20:
             if (reverseIt != myList.find_rend()) {
-                cout << "Текущий элемент: " << reverseIt.getValue()//*reverseIt << endl;
+                cout << "Текущий элемент: " << *reverseIt << endl;
             }
             else {
                 cout << "Итератор вне границ списка.\n";
