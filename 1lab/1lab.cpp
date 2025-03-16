@@ -166,11 +166,9 @@ void List<T>::ClearList() {
 template<typename T>
 bool List<T>::is_empty() {
         if (size == 0) {
-            cout << "Список пустой.\n";
             return true;
         }
         else {
-            cout << "Список не пустой.\n";
             return false;
         }
     }
@@ -178,32 +176,27 @@ bool List<T>::is_empty() {
 template<typename T>
 bool List<T>::is_it_here(const T& value) {
     for (size_t i = 0; i < size; i++) {
-        if (data[i] == value) {
-            cout << "Ваш элемент найден в списке!" << endl;
+        if (data[i] == value) 
             return true;
         }
-    }
-    cout << "Такой элемент в списке отсутствует!\n";
+    
     return false;
 }
 template<typename T>
 T List<T>::findByIndex(size_t index) {
-    if (index >= size) {
+    if (index >= size || index < 0) {
         throw out_of_range ("Индекс выходит за границы списка!\n");
     }
-    cout << "Элемент найден успешно! \n";
     return data[index];
 };
 
 template<typename T>
 void List<T>::changeByIndex(size_t index, const T& value)
 {
-    if (index >= size) { // меняем если есть
-        cout << "Индекс выходит за границы списка!\n";
-        return;
+    if (index >= size || index < 0) { // меняем если есть
+        throw out_of_range("Индекс выходит за границы списка!\n");
     }
     data[index] = value;
-    cout << "Элемент изменен успешно! \n";
 }
 
 template<typename T>
@@ -213,15 +206,13 @@ size_t List<T>::findByNumber(const T& value) {
             return i;
         }
     }
-    throw runtime_error ("Элемент в списке отсутствует\n");
-    
+    throw runtime_error ("Элемент в списке отсутствует!\n");
 };
 
 template<typename T>
 void List<T>:: addByIndex(size_t index, const T& value) {
-    if (index > size) { //если равен то элемент будет последним в списке
-        cout << "Индекс выходит за границы списка!\n";
-        return;
+    if (index > size || index < 0) { //если равен то будет самым последним в списке
+        throw out_of_range("Индекс выходит за границы списка!\n");
     }
     if (size == capacity) {
         expand();
@@ -241,7 +232,6 @@ void List<T>:: addByIndex(size_t index, const T& value) {
     delete[] data;
     data = newData;
     size++;
-    cout << "Элемент добавлен успешно! \n";
 }
 template<typename T>
 void List<T>::delByNumber(const T& value) {
@@ -265,9 +255,8 @@ void List<T>::delByNumber(const T& value) {
 }
 template<typename T>
 void List<T>::delById(size_t index) {
-    if (index >= size) {
-        cout << "Индекс выходит за границы!\n";
-        return;
+    if (index >= size || index < 0) {
+        throw out_of_range("Индекс выходит за границы списка!\n");
     }
 
     // Сдвигаем оставшиеся элементы влево
@@ -276,7 +265,6 @@ void List<T>::delById(size_t index) {
     }
 
     size--;  // Уменьшаем количество элементов
-    cout << "Элемент удален успешно!\n";
 }
 //ИТЕРАТОРЫ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ПРОВЕРИТЬ ЧТО ТАМ ВХОД ВЫХОД В МЕТОДИЧКЕ
 template<typename T>
@@ -310,13 +298,15 @@ void List<T>::fillWithRandomValues(size_t count, int minValue, int maxValue) {
 
 
 template<typename T>
-void runMenu(List<T>& myList) {
+void runMenu() {
     int choice;
+    List<int> myList;
     T value;
     size_t index;
-
+    auto directIt = myList.find_begin();
+    auto reverseIt = myList.find_rbegin();
     while (true) {
-        cout << "\n--- МЕНЮ ---\n";
+        cout << "\n--- ГЛАВНОЕ МЕНЮ ---\n";
         cout << "1. Добавить элемент\n";
         cout << "2. Добавить по индексу\n";
         cout << "3. Удалить элемент по значению\n";
@@ -327,35 +317,70 @@ void runMenu(List<T>& myList) {
         cout << "8. Проверка списка на пустоту\n";
         cout << "9. Чтение элемента по индексу\n";
         cout << "10. Получение позиции элемента\n";
-        cout << "11. Выйти\n";
+        cout << "11. Изменение элемента по индексу\n";
+        cout << "12. Опрос размера списка\n";
+
+        cout << "------------------------\n";
+        cout << "13. Прямой итератор: В начало\n";
+        cout << "14. Прямой итератор: Шаг вперед\n";
+        cout << "15. Прямой итератор: Запись в текущую позицию\n";
+        cout << "16. Прямой итератор: Печать текущего элемента\n";
+        cout << "17. Прямой итератор: Текущий статус\n";
+
+        cout << "------------------------\n";
+        cout << "18. Обратный итератор: В конец\n";
+        cout << "19. Обратный итератор: Шаг назад\n";
+        cout << "20. Обратный итератор: Запись в текущую позицию\n";
+        cout << "21. Обратный итератор: Печать текущего элемента\n";
+        cout << "22. Обратный итератор: Текущий статус\n";
+
+        cout << "------------------------\n";
+        cout << "23. Отладка: Наполнить список случайными элементами\n";
+        cout << "24. Проверка равенства прямых итераторов (==)\n";
+        cout << "25. Проверка неравенства прямых итераторов (!=)\n";
+        cout << "26. Проверка равенства обратных итераторов (==)\n";
+        cout << "27. Проверка неравенства обратных итераторов (!=)\n";
+        cout << "0. Выйти\n";
         cout << "Выберите действие: ";
         cin >> choice;
 
         switch (choice) {
         case 1:
-            cout << "Введите элемент: ";
+            cout << "Введите значение: ";
             cin >> value;
             myList.add(value);
             break;
         case 2:
-            cout << "Введите индекс и элемент: ";
+            cout << "Введите индекс и значение: ";
             cin >> index >> value;
-            myList.addByIndex(index, value);
+            try {
+                myList.addByIndex(index, value);
+                cout << "Элемент добавлен!" << endl;
+            }
+            catch (const out_of_range& e) {
+                cerr << e.what() << endl;
+            }
             break;
         case 3:
-            cout << "Введите элемент для удаления: ";
+            cout << "Введите значение для удаления: ";
             cin >> value;
             myList.delByNumber(value);
             break;
         case 4:
             cout << "Введите индекс для удаления: ";
             cin >> index;
-            myList.delById(index);
+            try {
+                myList.delById(index);
+                cout << "Элемент удален!" << endl;
+            }
+            catch (const out_of_range& e) {
+                cerr << e.what();
+            }
             break;
         case 5:
-            cout << "Введите элемент для поиска: ";
+            cout << "Введите значение для проверки: ";
             cin >> value;
-            cout << (myList.is_it_here(value) ? "Элемент найден!\n" : "Элемент не найден!\n");
+            myList.is_it_here(value) ? cout << "Ваш элемент найден в списке!" << endl : cout << "Такой элемент в списке отсутствует!\n";
             break;
         case 6:
             cout << "Текущий список: ";
@@ -363,10 +388,10 @@ void runMenu(List<T>& myList) {
             break;
         case 7:
             myList.ClearList();
-            cout << "Список очищен!\n";
             break;
         case 8:
-            cout << (myList.is_empty() ? "Список пуст.\n" : "Список не пуст.\n");
+            
+            myList.is_empty() ? cout << "Список пустой.\n" : cout << "Список не пустой.\n";
             break;
         case 9:
             cout << "Введите индекс элемента: ";
@@ -374,62 +399,156 @@ void runMenu(List<T>& myList) {
             try {
                 cout << "Результат поиска: " << myList.findByIndex(index) << endl;
             }
-            catch (const char* msg) {
-                cout << msg << endl;
+            catch (const out_of_range& e) {
+                cerr << e.what() << endl;
             }
             break;
         case 10:
             cout << "Введите элемент для поиска: ";
             cin >> value;
             try {
-                cout << "Элемент найден на позиции: " << myList.findByNumber(value) << endl;
+                cout << "Элемент найден под индексом: " << myList.findByNumber(value);
             }
-            catch (const char* msg) {
-                cout << msg << endl;
+            catch (const runtime_error& e) {
+                cerr << e.what() << endl;
             }
             break;
         case 11:
+            cout << "Введите индекс и новое значение: ";
+            cin >> index >> value;
+
+            try {
+                myList.changeByIndex(index, value);
+                cout << "Элемент изменен успешно!\n";
+            }
+            catch (const out_of_range& e) {
+                cerr << e.what() << endl;
+            }
+            break;
+        case 12:
+            cout << "Размер списка: " << myList.return_size() << endl;
+            break;
+
+            // Прямой итератор
+        case 13:
+            directIt = myList.find_begin();
+            cout << "Прямой итератор установлен в начало.\n";
+            break;
+        case 14:
+            if (directIt != myList.find_end()) {
+                ++directIt;
+                cout << "Шаг вперед выполнен.\n";
+            }
+            else {
+                cout << "Итератор уже в конце списка!\n";
+            }
+            break;
+        case 15:
+            cout << "Введите новое значение: ";
+            cin >> value;
+            *directIt = value;
+            cout << "Запись выполнена.\n";
+            break;
+        case 16:
+            if (directIt != myList.find_end()) {
+                cout << "Текущий элемент: " << *directIt << endl;
+            }
+            else {
+                cout << "Итератор вне границ списка.\n";
+            }
+            break;
+        case 17:
+            cout << "Адрес итератора: " << &directIt << endl;
+            break;
+
+            // Обратный итератор
+        case 18:
+            reverseIt = myList.find_rbegin();
+            cout << "Обратный итератор установлен в конец.\n";
+            break;
+        case 19:
+            if (reverseIt != myList.find_rend()) {
+                --reverseIt;
+                cout << "Шаг назад выполнен.\n";
+            }
+            else {
+                cout << "Итератор уже в начале списка!\n";
+            }
+            break;
+        case 20:
+            cout << "Введите новое значение: ";
+            cin >> value;
+            *reverseIt = value;
+            cout << "Запись выполнена.\n";
+            break;
+        case 21:
+            if (reverseIt != myList.find_rend()) {
+                cout << "Текущий элемент: " << *reverseIt << endl;
+            }
+            else {
+                cout << "Итератор вне границ списка.\n";
+            }
+            break;
+        case 22:
+            cout << "Адрес итератора: " << &reverseIt << endl;
+            break;
+
+            // Отладка
+        case 23:
+            myList.fillWithRandomValues(30, 10, 100);
+            break;
+        case 24:
+            if (directIt == myList.find_begin()) {
+                cout << "Прямой итератор находится в начале (равны).\n";
+            }
+            else {
+                cout << "Прямой итератор не в начале (не равны).\n";
+            }
+            break;
+
+        case 25:
+            if (directIt != myList.find_end()) {
+                cout << "Прямой итератор не указывает на конец (не равны).\n";
+            }
+            else {
+                cout << "Прямой итератор указывает на конец (равны).\n";
+            }
+            break;
+
+        case 26:
+            if (reverseIt == myList.find_rbegin()) {
+                cout << "Обратный итератор находится в конце (равны).\n";
+            }
+            else {
+                cout << "Обратный итератор не в конце (не равны).\n";
+            }
+            break;
+
+        case 27:
+            if (reverseIt != myList.find_rend()) {
+                cout << "Обратный итератор не указывает на начало (не равны).\n";
+            }
+            else {
+                cout << "Обратный итератор указывает на начало (равны).\n";
+            }
+            break;
+        case 0:
             return;
+
         default:
             cout << "Некорректный ввод! Попробуйте снова.\n";
         }
     }
 }
-void menu() {
-    int typeChoice;
-    cout << "Выберите тип данных для списка:\n";
-    cout << "1. int\n";
-    cout << "2. float\n";
-    cout << "3. string\n";
-    cout << "Ваш выбор: ";
-    cin >> typeChoice;
 
-    if (typeChoice == 1) {
-        List<int> myList;
-        runMenu(myList);
-    }
-    else if (typeChoice == 2) {
-        List<float> myList;
-        runMenu(myList);
-    }
-    else if (typeChoice == 3) {
-        List<string> myList;
-        runMenu(myList);
-    }
-    else {
-        cout << "Некорректный ввод! Попробуйте снова.\n";
-        menu();
-    }
-}
 template<typename T>
 void List<T>:: printList() {
     for (size_t i = 0; i < size; i++) {
-        std::cout << data[i] << " ";
+        cout << data[i] << " ";
     }
-    cout << "\n";
 }
 int main()
 {
     setlocale(LC_ALL, "Rus");
-    menu();
+    runMenu<int>();
 }
